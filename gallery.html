@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gallery — Bloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --accent: #c9a96e; --dark: #0d0d0d; --mid: #1a1a1a; --light: #f5f0eb; --muted: #888; }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: #eee; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 999;
+      padding: 22px 60px; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(13,13,13,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201,169,110,0.12);
+    }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--accent); letter-spacing: 2px; text-decoration: none; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { text-decoration: none; color: #bbb; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-cta { padding: 10px 26px; border: 1.5px solid var(--accent); border-radius: 40px; color: var(--accent) !important; transition: all 0.3s !important; }
+    .nav-cta:hover { background: var(--accent); color: #000 !important; }
+    .page-hero {
+      padding: 160px 60px 80px; text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,169,110,0.07) 0%, transparent 70%), var(--dark);
+      border-bottom: 1px solid rgba(201,169,110,0.1);
+    }
+    .page-tag { font-size: 0.72rem; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; display: block; margin-bottom: 20px; }
+    .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 5vw, 4rem); color: #fff; }
+    .page-hero p { color: #666; margin-top: 16px; font-size: 0.95rem; font-weight: 300; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent); margin: 0 60px; }
+    footer { padding: 40px 60px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--accent); }
+    .footer-text { color: #444; font-size: 0.82rem; }
+    .footer-text a { color: var(--accent); text-decoration: none; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: #555; font-size: 0.82rem; text-decoration: none; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--accent); }
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      .page-hero { padding: 120px 24px 60px; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+    
+    .gallery-section { padding: 80px 60px; }
+    .gallery-intro { text-align: center; margin-bottom: 64px; }
+    .gallery-intro .page-tag { margin-bottom: 16px; }
+    .masonry {
+      columns: 3; column-gap: 12px;
+    }
+    .masonry-item {
+      break-inside: avoid; margin-bottom: 12px;
+      background: var(--mid); border-radius: 12px; overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.04);
+      display: flex; align-items: center; justify-content: center;
+      transition: transform 0.3s, border-color 0.3s;
+      cursor: pointer; position: relative;
+    }
+    .masonry-item:hover { transform: scale(1.01); border-color: rgba(201,169,110,0.3); }
+    .masonry-item .img-placeholder {
+      width: 100%; display: flex; flex-direction: column;
+      align-items: center; justify-content: center; gap: 12px;
+      padding: 40px 20px;
+    }
+    .masonry-item .img-placeholder .emoji { font-size: 3.5rem; opacity: 0.35; }
+    .masonry-item .img-placeholder .label { font-size: 0.72rem; color: #444; letter-spacing: 2px; text-transform: uppercase; }
+    .tall { min-height: 320px; }
+    .medium { min-height: 220px; }
+    .short { min-height: 160px; }
+    .overlay {
+      position: absolute; inset: 0; background: rgba(201,169,110,0.08);
+      opacity: 0; transition: opacity 0.3s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .masonry-item:hover .overlay { opacity: 1; }
+    .overlay-icon { font-size: 1.5rem; }
+    .filter-bar {
+      display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 56px;
+    }
+    .filter-btn {
+      padding: 9px 22px; border-radius: 40px; font-size: 0.78rem;
+      letter-spacing: 1px; text-transform: uppercase; cursor: pointer;
+      transition: all 0.3s; border: 1.5px solid rgba(255,255,255,0.1);
+      background: transparent; color: #888; font-family: 'Inter', sans-serif;
+    }
+    .filter-btn.active, .filter-btn:hover { border-color: var(--accent); color: var(--accent); background: rgba(201,169,110,0.06); }
+    @media (max-width: 900px) { .gallery-section { padding: 60px 24px; } .masonry { columns: 2; } }
+    @media (max-width: 500px) { .masonry { columns: 1; } }
+
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">Bloom</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="menu.html" >Menu</a>
+    <a href="gallery.html" class="active">Gallery</a>
+    <a href="order.html" >Order</a>
+    <a href="contact.html"  class="nav-cta">Contact</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <span class="page-tag">Visual Story</span>
+  <h1>Our Gallery</h1>
+  <p>A glimpse into the world we've built — every frame tells a story.</p>
+</div>
+
+<section class="gallery-section">
+  <div class="filter-bar">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Ambience</button>
+    <button class="filter-btn">Food & Drinks</button>
+    <button class="filter-btn">Events</button>
+    <button class="filter-btn">Behind the Scenes</button>
+  </div>
+  <div class="masonry">
+    <div class="masonry-item tall"><div class="img-placeholder"><div class="emoji">🏡</div><div class="label">Interior</div></div><div class="overlay"><div class="overlay-icon">✦</div></div></div>
+    <div class="masonry-item short"><div class="img-placeholder"><div class="emoji">☕</div><div class="label">Drinks</div></div><div class="overlay"><div class="overlay-icon">✦</div></div></div>
+    <div class="masonry-item medium"><div class="img-placeholder"><div class="emoji">🌿</div><div class="label">Decor</div></div><div class="overlay"><div class="overlay-icon">✦</div></div></div>
+    <div class="masonry-item medium"><div class="img-placeholder"><div class="emoji">🍽️</div><div class="label">Plating</div></div><div class="overlay"><div class="overlay-icon">✦</div></div></div>
+    <div class="masonry-item tall"><div class="img-placeholder"><div class="emoji">✨</div><div class="label">Evening Vibe</div></div><div class="overlay"><div class="overlay-icon">✦</div></div></div>
+    <div class="masonry-item short"><div class="img-placeholder"><div class="emoji">🎶</div><div class="label">Live Music</div></div><div class="overlay"><div class="overlay-icon">✦</div></div></div>
+    <div class="masonry-item short"><div class="img-placeholder"><div class="emoji">🌸</div><div class="label">Seasonal</div></div><div class="overlay"><div class="overlay-icon">✦</div></div></div>
+    <div class="masonry-item medium"><div class="img-placeholder"><div class="emoji">🍰</div><div class="label">Desserts</div></div><div class="overlay"><div class="overlay-icon">✦</div></div></div>
+    <div class="masonry-item tall"><div class="img-placeholder"><div class="emoji">🕯️</div><div class="label">Ambience</div></div><div class="overlay"><div class="overlay-icon">✦</div></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+<footer>
+  <div class="footer-logo">Bloom</div>
+  <div class="footer-text">© 2026 Bloom, Ahmedabad. Website by <a href="mailto:kotawalahatim07@gmail.com">Hatim Kotawala</a></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+</body>
+</html>

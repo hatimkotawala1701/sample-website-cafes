@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order — Bloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --accent: #c9a96e; --dark: #0d0d0d; --mid: #1a1a1a; --light: #f5f0eb; --muted: #888; }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: #eee; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 999;
+      padding: 22px 60px; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(13,13,13,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201,169,110,0.12);
+    }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--accent); letter-spacing: 2px; text-decoration: none; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { text-decoration: none; color: #bbb; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-cta { padding: 10px 26px; border: 1.5px solid var(--accent); border-radius: 40px; color: var(--accent) !important; transition: all 0.3s !important; }
+    .nav-cta:hover { background: var(--accent); color: #000 !important; }
+    .page-hero {
+      padding: 160px 60px 80px; text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,169,110,0.07) 0%, transparent 70%), var(--dark);
+      border-bottom: 1px solid rgba(201,169,110,0.1);
+    }
+    .page-tag { font-size: 0.72rem; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; display: block; margin-bottom: 20px; }
+    .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 5vw, 4rem); color: #fff; }
+    .page-hero p { color: #666; margin-top: 16px; font-size: 0.95rem; font-weight: 300; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent); margin: 0 60px; }
+    footer { padding: 40px 60px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--accent); }
+    .footer-text { color: #444; font-size: 0.82rem; }
+    .footer-text a { color: var(--accent); text-decoration: none; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: #555; font-size: 0.82rem; text-decoration: none; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--accent); }
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      .page-hero { padding: 120px 24px 60px; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+    
+    .order-section { padding: 80px 60px; max-width: 820px; margin: 0 auto; }
+    .order-intro { text-align: center; margin-bottom: 60px; }
+    .order-intro p { color: #666; font-size: 0.95rem; font-weight: 300; max-width: 480px; margin: 16px auto 0; line-height: 1.8; }
+    .order-form { display: flex; flex-direction: column; gap: 20px; }
+    .form-group { display: flex; flex-direction: column; gap: 8px; }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    label { font-size: 0.75rem; letter-spacing: 1.5px; text-transform: uppercase; color: #666; }
+    input, select, textarea {
+      background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 10px; padding: 16px 20px; color: #eee; font-size: 0.9rem;
+      font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.3s; width: 100%;
+    }
+    input::placeholder, textarea::placeholder { color: #3a3a3a; }
+    input:focus, select:focus, textarea:focus { border-color: var(--accent); }
+    select option { background: #1a1a1a; color: #eee; }
+    .item-selector { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 4px; }
+    .item-check { display: none; }
+    .item-label {
+      display: flex; flex-direction: column; gap: 4px; padding: 18px 20px;
+      background: rgba(255,255,255,0.03); border: 1.5px solid rgba(255,255,255,0.08);
+      border-radius: 10px; cursor: pointer; transition: all 0.3s;
+    }
+    .item-label:hover { border-color: rgba(201,169,110,0.3); }
+    .item-check:checked + .item-label { border-color: var(--accent); background: rgba(201,169,110,0.07); }
+    .item-label .item-name { font-size: 0.88rem; color: #ddd; font-weight: 500; }
+    .item-label .item-p { font-size: 0.8rem; color: var(--accent); }
+    .qty-row { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .wa-btn {
+      padding: 17px; background: #25D366; color: #fff; border: none;
+      border-radius: 40px; font-size: 1rem; font-weight: 600; cursor: pointer;
+      font-family: 'Inter', sans-serif; display: flex; align-items: center;
+      justify-content: center; gap: 10px; transition: all 0.3s; margin-top: 8px;
+    }
+    .wa-btn:hover { background: #1ebe5d; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(37,211,102,0.25); }
+    .form-note { text-align: center; color: #444; font-size: 0.8rem; margin-top: 8px; line-height: 1.6; }
+    textarea { height: 100px; resize: vertical; }
+    @media (max-width: 900px) { .order-section { padding: 60px 24px; } .form-row-2, .qty-row { grid-template-columns: 1fr; } }
+
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">Bloom</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="menu.html" >Menu</a>
+    <a href="gallery.html" >Gallery</a>
+    <a href="order.html" class="active">Order</a>
+    <a href="contact.html"  class="nav-cta">Contact</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <span class="page-tag">Place an Order</span>
+  <h1>Order Online</h1>
+  <p>Fill in your details and we'll confirm your order directly via WhatsApp.</p>
+</div>
+
+<section class="order-section">
+  <form class="order-form" id="orderForm">
+
+    <div class="form-group">
+      <label>Select Items</label>
+      <div class="item-selector">
+        <input type="checkbox" class="item-check" id="i1" name="items" value="Cold Brew Reserve ₹280"/>
+        <label class="item-label" for="i1"><span class="item-name">Cold Brew Reserve</span><span class="item-p">₹280</span></label>
+
+        <input type="checkbox" class="item-check" id="i2" name="items" value="Saffron Latte ₹320"/>
+        <label class="item-label" for="i2"><span class="item-name">Saffron Latte</span><span class="item-p">₹320</span></label>
+
+        <input type="checkbox" class="item-check" id="i3" name="items" value="Rose Cardamom Chai ₹180"/>
+        <label class="item-label" for="i3"><span class="item-name">Rose Cardamom Chai</span><span class="item-p">₹180</span></label>
+
+        <input type="checkbox" class="item-check" id="i4" name="items" value="Saffron Risotto ₹620"/>
+        <label class="item-label" for="i4"><span class="item-name">Saffron Risotto</span><span class="item-p">₹620</span></label>
+
+        <input type="checkbox" class="item-check" id="i5" name="items" value="Wild Mushroom Pasta ₹580"/>
+        <label class="item-label" for="i5"><span class="item-name">Mushroom Pasta</span><span class="item-p">₹580</span></label>
+
+        <input type="checkbox" class="item-check" id="i6" name="items" value="Dark Chocolate Fondant ₹380"/>
+        <label class="item-label" for="i6"><span class="item-name">Choc Fondant</span><span class="item-p">₹380</span></label>
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label>Your Name</label>
+        <input type="text" id="cname" placeholder="Full name" required/>
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="cphone" placeholder="+91 XXXXX XXXXX" required/>
+      </div>
+    </div>
+
+    <div class="form-row-2">
+      <div class="form-group">
+        <label>Order Type</label>
+        <select id="otype">
+          <option value="Dine In">Dine In</option>
+          <option value="Takeaway">Takeaway</option>
+          <option value="Delivery">Delivery</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Preferred Time</label>
+        <input type="time" id="otime"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Special Instructions (optional)</label>
+      <textarea id="onotes" placeholder="Allergies, preferences, or anything else..."></textarea>
+    </div>
+
+    <button type="button" class="wa-btn" onclick="sendToWhatsApp()">
+      <span>📲</span> Send Order via WhatsApp
+    </button>
+    <p class="form-note">You'll be redirected to WhatsApp with your order details pre-filled.<br>We'll confirm within 15 minutes.</p>
+  </form>
+</section>
+
+<script>
+function sendToWhatsApp() {
+  const name = document.getElementById('cname').value || 'Customer';
+  const phone = document.getElementById('cphone').value || 'Not provided';
+  const type = document.getElementById('otype').value;
+  const time = document.getElementById('otime').value || 'ASAP';
+  const notes = document.getElementById('onotes').value || 'None';
+  const checked = [...document.querySelectorAll('input[name="items"]:checked')].map(i => i.value);
+  const items = checked.length ? checked.join(', ') : 'Not selected';
+  const msg = `*New Order — Bloom*%0A%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Type:* ${type}%0A*Time:* ${time}%0A*Items:* ${items}%0A*Notes:* ${notes}`;
+  window.open(`https://wa.me/919999999999?text=${msg}`, '_blank');
+}
+</script>
+
+<div class="divider"></div>
+<footer>
+  <div class="footer-logo">Bloom</div>
+  <div class="footer-text">© 2026 Bloom, Ahmedabad. Website by <a href="mailto:kotawalahatim07@gmail.com">Hatim Kotawala</a></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+</body>
+</html>

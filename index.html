@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home — Bloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --accent: #c9a96e; --dark: #0d0d0d; --mid: #1a1a1a; --light: #f5f0eb; --muted: #888; }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: #eee; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+
+    /* NAV */
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 999;
+      padding: 22px 60px; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(13,13,13,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201,169,110,0.12);
+    }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--accent); letter-spacing: 2px; text-decoration: none; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { text-decoration: none; color: #bbb; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-links a.active { color: var(--accent); }
+    .nav-cta { padding: 10px 26px; border: 1.5px solid var(--accent); border-radius: 40px; color: var(--accent) !important; transition: all 0.3s !important; }
+    .nav-cta:hover { background: var(--accent); color: #000 !important; }
+
+    /* HERO */
+    .hero { min-height: 100vh; display: flex; align-items: center; position: relative; overflow: hidden; padding: 120px 60px 80px; }
+    .hero-bg {
+      position: absolute; inset: 0; z-index: 0;
+      background: radial-gradient(ellipse 80% 60% at 70% 40%, rgba(201,169,110,0.08) 0%, transparent 70%),
+                  radial-gradient(ellipse 60% 80% at 20% 80%, rgba(201,169,110,0.05) 0%, transparent 60%), var(--dark);
+    }
+    .hero-grid {
+      position: absolute; inset: 0; z-index: 0; opacity: 0.04;
+      background-image: linear-gradient(rgba(201,169,110,1) 1px, transparent 1px), linear-gradient(90deg, rgba(201,169,110,1) 1px, transparent 1px);
+      background-size: 60px 60px;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 680px; }
+    .hero-tag { display: inline-flex; align-items: center; gap: 10px; background: rgba(201,169,110,0.1); border: 1px solid rgba(201,169,110,0.3); border-radius: 40px; padding: 8px 20px; font-size: 0.75rem; letter-spacing: 2px; text-transform: uppercase; color: var(--accent); margin-bottom: 32px; }
+    .hero-tag::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: var(--accent); display: block; }
+    .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(3rem, 6vw, 5.5rem); line-height: 1.1; color: #fff; margin-bottom: 24px; }
+    .hero h1 em { color: var(--accent); font-style: italic; }
+    .hero p { font-size: 1.05rem; color: #999; line-height: 1.8; max-width: 480px; margin-bottom: 44px; font-weight: 300; }
+    .hero-btns { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-gold { padding: 15px 38px; background: var(--accent); color: #000; border: none; border-radius: 40px; font-size: 0.9rem; font-weight: 600; letter-spacing: 0.5px; cursor: pointer; text-decoration: none; transition: all 0.3s; display: inline-block; }
+    .btn-gold:hover { background: #e0bb80; transform: translateY(-2px); box-shadow: 0 8px 28px rgba(201,169,110,0.3); }
+    .btn-ghost { padding: 15px 38px; background: transparent; color: #eee; border: 1.5px solid rgba(255,255,255,0.2); border-radius: 40px; font-size: 0.9rem; font-weight: 500; cursor: pointer; text-decoration: none; display: inline-block; transition: all 0.3s; }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .hero-stats { position: absolute; right: 60px; bottom: 80px; z-index: 1; display: flex; gap: 48px; }
+    .stat { text-align: center; }
+    .stat-num { font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--accent); }
+    .stat-label { font-size: 0.72rem; color: #666; letter-spacing: 1.5px; text-transform: uppercase; margin-top: 4px; }
+
+    /* QUICK LINKS */
+    .quick-links { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; }
+    .quick-link {
+      background: var(--mid); padding: 40px 36px; text-decoration: none;
+      display: flex; flex-direction: column; gap: 14px;
+      border-bottom: 2px solid transparent; transition: all 0.3s; position: relative; overflow: hidden;
+    }
+    .quick-link::after { content: '→'; position: absolute; right: 36px; top: 50%; transform: translateY(-50%); color: var(--accent); font-size: 1.2rem; opacity: 0; transition: opacity 0.3s, right 0.3s; }
+    .quick-link:hover { background: #1f1f1f; border-bottom-color: var(--accent); }
+    .quick-link:hover::after { opacity: 1; right: 28px; }
+    .quick-link-icon { font-size: 1.8rem; }
+    .quick-link-label { font-size: 0.68rem; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; }
+    .quick-link-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #fff; }
+    .quick-link-desc { font-size: 0.82rem; color: #555; line-height: 1.6; font-weight: 300; }
+
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent); margin: 0 60px; }
+
+    /* ABOUT */
+    .about { padding: 120px 60px; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+    .about-visual { position: relative; height: 520px; }
+    .about-img-main { position: absolute; top: 0; left: 0; width: 72%; height: 80%; background: linear-gradient(135deg, #1e1a14, #2a2218); border-radius: 16px; border: 1px solid rgba(201,169,110,0.15); display: flex; align-items: center; justify-content: center; }
+    .about-img-main .placeholder { font-size: 5rem; opacity: 0.4; }
+    .about-img-accent { position: absolute; bottom: 0; right: 0; width: 55%; height: 55%; background: linear-gradient(135deg, rgba(201,169,110,0.15), rgba(201,169,110,0.05)); border-radius: 16px; border: 1px solid rgba(201,169,110,0.25); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+    .about-img-accent .big-num { font-family: 'Playfair Display', serif; font-size: 3rem; color: var(--accent); }
+    .about-img-accent .big-label { font-size: 0.75rem; color: #888; letter-spacing: 1px; text-transform: uppercase; }
+    .section-tag { font-size: 0.72rem; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; margin-bottom: 20px; display: block; }
+    .about-text h2 { font-family: 'Playfair Display', serif; font-size: 2.8rem; line-height: 1.2; color: #fff; margin-bottom: 24px; }
+    .about-text p { color: #888; line-height: 1.9; font-size: 0.95rem; margin-bottom: 16px; font-weight: 300; }
+    .feature-list { margin-top: 32px; display: flex; flex-direction: column; gap: 16px; }
+    .feature-item { display: flex; align-items: flex-start; gap: 14px; }
+    .feature-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); margin-top: 6px; flex-shrink: 0; }
+    .feature-item span { color: #bbb; font-size: 0.9rem; line-height: 1.6; }
+
+    /* SERVICES */
+    .services { padding: 120px 60px; }
+    .section-header { text-align: center; margin-bottom: 72px; }
+    .section-header h2 { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: #fff; }
+    .section-header p { color: #666; margin-top: 16px; font-size: 0.95rem; font-weight: 300; }
+    .service-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; }
+    .service-card { background: var(--mid); padding: 52px 40px; transition: background 0.3s; position: relative; overflow: hidden; }
+    .service-card::before { content: ''; position: absolute; bottom: 0; left: 0; height: 2px; width: 0; background: var(--accent); transition: width 0.4s; }
+    .service-card:hover::before { width: 100%; }
+    .service-card:hover { background: #1f1f1f; }
+    .service-num { font-family: 'Playfair Display', serif; font-size: 3.5rem; color: rgba(201,169,110,0.12); line-height: 1; margin-bottom: 28px; }
+    .service-icon { font-size: 2rem; margin-bottom: 20px; display: block; }
+    .service-card h3 { font-size: 1.1rem; color: #fff; margin-bottom: 14px; font-weight: 600; }
+    .service-card p { color: #666; font-size: 0.88rem; line-height: 1.8; font-weight: 300; }
+
+    /* TESTIMONIALS */
+    .testimonials { padding: 120px 60px; background: var(--mid); }
+    .testi-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 72px; }
+    .testi-card { background: var(--dark); border-radius: 16px; padding: 40px 32px; border: 1px solid rgba(255,255,255,0.05); transition: border-color 0.3s, transform 0.3s; }
+    .testi-card:hover { border-color: rgba(201,169,110,0.3); transform: translateY(-4px); }
+    .quote-mark { font-size: 4rem; color: rgba(201,169,110,0.2); line-height: 1; font-family: 'Playfair Display', serif; }
+    .testi-card p { color: #888; font-size: 0.92rem; line-height: 1.8; margin: 16px 0 28px; font-weight: 300; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 14px; }
+    .testi-avatar { width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #8a6a3a); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: #000; font-weight: 700; }
+    .testi-name { font-size: 0.9rem; color: #ddd; font-weight: 600; }
+    .testi-loc { font-size: 0.78rem; color: #555; margin-top: 2px; }
+    .stars { color: var(--accent); font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 4px; }
+
+    /* CTA BAND */
+    .cta-band {
+      padding: 100px 60px; text-align: center;
+      background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(201,169,110,0.07) 0%, transparent 70%), var(--dark);
+      border-top: 1px solid rgba(201,169,110,0.1); border-bottom: 1px solid rgba(201,169,110,0.1);
+    }
+    .cta-band h2 { font-family: 'Playfair Display', serif; font-size: 2.8rem; color: #fff; margin-bottom: 16px; }
+    .cta-band p { color: #666; font-size: 0.95rem; font-weight: 300; margin-bottom: 40px; }
+    .cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+    footer { padding: 40px 60px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--accent); }
+    .footer-text { color: #444; font-size: 0.82rem; }
+    .footer-text a { color: var(--accent); text-decoration: none; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: #555; font-size: 0.82rem; text-decoration: none; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--accent); }
+
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      .hero { padding: 100px 24px 60px; }
+      .hero-stats { display: none; }
+      .quick-links { grid-template-columns: 1fr 1fr; }
+      .about { grid-template-columns: 1fr; padding: 80px 24px; gap: 48px; }
+      .about-visual { height: 300px; }
+      .services { padding: 80px 24px; }
+      .service-grid { grid-template-columns: 1fr; }
+      .testimonials { padding: 80px 24px; }
+      .testi-grid { grid-template-columns: 1fr; }
+      .cta-band { padding: 80px 24px; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Bloom</a>
+  <div class="nav-links">
+    <a href="index.html" class="active">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="order.html">Order</a>
+    <a href="contact.html" class="nav-cta">Contact</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Est. 2019 · Ahmedabad, Gujarat</div>
+    <h1>Where Every Visit<br>Feels Like <em>Home</em></h1>
+    <p>A curated experience crafted with care. We combine quality, warmth, and style to give you something truly worth returning for.</p>
+    <div class="hero-btns">
+      <a href="order.html" class="btn-gold">Place an Order</a>
+      <a href="menu.html" class="btn-ghost">View Menu</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Happy Clients</div></div>
+    <div class="stat"><div class="stat-num">6</div><div class="stat-label">Years in Business</div></div>
+    <div class="stat"><div class="stat-num">4.9★</div><div class="stat-label">Google Rating</div></div>
+  </div>
+</section>
+
+<!-- QUICK LINKS -->
+<div class="quick-links">
+  <a href="menu.html" class="quick-link">
+    <div class="quick-link-icon">🍽️</div>
+    <div class="quick-link-label">Explore</div>
+    <div class="quick-link-title">Our Menu</div>
+    <div class="quick-link-desc">Signature drinks, small plates, mains & desserts</div>
+  </a>
+  <a href="gallery.html" class="quick-link">
+    <div class="quick-link-icon">📸</div>
+    <div class="quick-link-label">Visual Story</div>
+    <div class="quick-link-title">Gallery</div>
+    <div class="quick-link-desc">A glimpse into the world we've built</div>
+  </a>
+  <a href="order.html" class="quick-link">
+    <div class="quick-link-icon">📲</div>
+    <div class="quick-link-label">Quick & Easy</div>
+    <div class="quick-link-title">Order Online</div>
+    <div class="quick-link-desc">Place your order and we'll confirm via WhatsApp</div>
+  </a>
+  <a href="contact.html" class="quick-link">
+    <div class="quick-link-icon">💬</div>
+    <div class="quick-link-label">Reach Us</div>
+    <div class="quick-link-title">Contact</div>
+    <div class="quick-link-desc">Reservations, enquiries, or just a hello</div>
+  </a>
+</div>
+
+<div class="divider"></div>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-visual">
+    <div class="about-img-main"><div class="placeholder">🏡</div></div>
+    <div class="about-img-accent"><div class="big-num">6+</div><div class="big-label">Years of Excellence</div></div>
+  </div>
+  <div class="about-text">
+    <span class="section-tag">Our Story</span>
+    <h2>Built on Trust,<br>Driven by Passion</h2>
+    <p>We started with a simple idea — to create something that Ahmedabad would genuinely love. Today, we serve hundreds of loyal customers who trust us for quality that never wavers.</p>
+    <p>Every detail matters to us. From the experience we deliver to the relationships we build, we operate with the same passion and integrity we started with.</p>
+    <div class="feature-list">
+      <div class="feature-item"><div class="feature-dot"></div><span>Premium quality in everything we do</span></div>
+      <div class="feature-item"><div class="feature-dot"></div><span>Friendly, professional team always ready to help</span></div>
+      <div class="feature-item"><div class="feature-dot"></div><span>Conveniently located in Ahmedabad with easy access</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="section-header">
+    <span class="section-tag">What We Do</span>
+    <h2>Our Signature Services</h2>
+    <p>Thoughtfully designed experiences for every need</p>
+  </div>
+  <div class="service-grid">
+    <div class="service-card"><div class="service-num">01</div><span class="service-icon">✦</span><h3>Premium Experience</h3><p>Top-tier quality, no shortcuts. We set the standard and then exceed it every time.</p></div>
+    <div class="service-card"><div class="service-num">02</div><span class="service-icon">⚡</span><h3>Fast & Reliable</h3><p>Your time is precious. We work with precision and speed without compromising quality.</p></div>
+    <div class="service-card"><div class="service-num">03</div><span class="service-icon">🛡</span><h3>Trusted by Hundreds</h3><p>Over 500 customers in Ahmedabad have made us their first choice.</p></div>
+    <div class="service-card"><div class="service-num">04</div><span class="service-icon">💬</span><h3>Personal Attention</h3><p>We treat every customer as an individual. Every visit is personalised to your preferences.</p></div>
+    <div class="service-card"><div class="service-num">05</div><span class="service-icon">📍</span><h3>Easy to Reach</h3><p>Centrally located with convenient hours and WhatsApp booking for your ease.</p></div>
+    <div class="service-card"><div class="service-num">06</div><span class="service-icon">🎁</span><h3>Loyalty Rewards</h3><p>Exclusive offers and special privileges for our regular customers.</p></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials" id="testimonials">
+  <div class="section-header">
+    <span class="section-tag">Reviews</span>
+    <h2>What Our Customers Say</h2>
+    <p>Real words from real people who trust us</p>
+  </div>
+  <div class="testi-grid">
+    <div class="testi-card"><div class="quote-mark">"</div><div class="stars">★★★★★</div><p>An experience that goes far beyond expectations. The quality, the attention to detail, the warmth — truly unmatched in Ahmedabad.</p><div class="testi-author"><div class="testi-avatar">P</div><div><div class="testi-name">Priya Shah</div><div class="testi-loc">Satellite, Ahmedabad</div></div></div></div>
+    <div class="testi-card"><div class="quote-mark">"</div><div class="stars">★★★★★</div><p>I've been coming here for over a year and the consistency is remarkable. They've earned every bit of loyalty I have.</p><div class="testi-author"><div class="testi-avatar">R</div><div><div class="testi-name">Rohan Mehta</div><div class="testi-loc">Navrangpura, Ahmedabad</div></div></div></div>
+    <div class="testi-card"><div class="quote-mark">"</div><div class="stars">★★★★★</div><p>Found them through Google and have never looked back. Professional, warm, and genuinely the best at what they do.</p><div class="testi-author"><div class="testi-avatar">A</div><div><div class="testi-name">Anita Kapoor</div><div class="testi-loc">Vastrapur, Ahmedabad</div></div></div></div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <h2>Ready to Experience Bloom?</h2>
+  <p>Place an order online or get in touch — we'd love to have you.</p>
+  <div class="cta-btns">
+    <a href="order.html" class="btn-gold">Order Now</a>
+    <a href="contact.html" class="btn-ghost">Make a Reservation</a>
+  </div>
+</section>
+
+<div class="divider"></div>
+<footer>
+  <div class="footer-logo">Bloom</div>
+  <div class="footer-text">© 2026 Bloom, Ahmedabad. Website by <a href="mailto:kotawalahatim07@gmail.com">Hatim Kotawala</a></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="order.html">Order</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>

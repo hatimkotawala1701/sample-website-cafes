@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Menu — Bloom</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet"/>
+  <style>
+    :root { --accent: #c9a96e; --dark: #0d0d0d; --mid: #1a1a1a; --light: #f5f0eb; --muted: #888; }
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--dark); color: #eee; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+    ::-webkit-scrollbar { width: 4px; }
+    ::-webkit-scrollbar-track { background: var(--dark); }
+    ::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    nav {
+      position: fixed; top: 0; width: 100%; z-index: 999;
+      padding: 22px 60px; display: flex; justify-content: space-between; align-items: center;
+      background: rgba(13,13,13,0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201,169,110,0.12);
+    }
+    .logo { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--accent); letter-spacing: 2px; text-decoration: none; }
+    .nav-links { display: flex; gap: 28px; align-items: center; }
+    .nav-links a { text-decoration: none; color: #bbb; font-size: 0.82rem; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 500; transition: color 0.3s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+    .nav-cta { padding: 10px 26px; border: 1.5px solid var(--accent); border-radius: 40px; color: var(--accent) !important; transition: all 0.3s !important; }
+    .nav-cta:hover { background: var(--accent); color: #000 !important; }
+    .page-hero {
+      padding: 160px 60px 80px; text-align: center;
+      background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(201,169,110,0.07) 0%, transparent 70%), var(--dark);
+      border-bottom: 1px solid rgba(201,169,110,0.1);
+    }
+    .page-tag { font-size: 0.72rem; color: var(--accent); letter-spacing: 3px; text-transform: uppercase; display: block; margin-bottom: 20px; }
+    .page-hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 5vw, 4rem); color: #fff; }
+    .page-hero p { color: #666; margin-top: 16px; font-size: 0.95rem; font-weight: 300; max-width: 500px; margin-left: auto; margin-right: auto; }
+    .divider { height: 1px; background: linear-gradient(90deg, transparent, rgba(201,169,110,0.3), transparent); margin: 0 60px; }
+    footer { padding: 40px 60px; border-top: 1px solid rgba(255,255,255,0.06); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; }
+    .footer-logo { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--accent); }
+    .footer-text { color: #444; font-size: 0.82rem; }
+    .footer-text a { color: var(--accent); text-decoration: none; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { color: #555; font-size: 0.82rem; text-decoration: none; transition: color 0.3s; }
+    .footer-links a:hover { color: var(--accent); }
+    @media (max-width: 900px) {
+      nav { padding: 18px 24px; }
+      .nav-links { display: none; }
+      .page-hero { padding: 120px 24px 60px; }
+      footer { padding: 32px 24px; flex-direction: column; text-align: center; }
+    }
+    
+    .menu-section { padding: 80px 60px; }
+    .menu-section + .menu-section { padding-top: 0; }
+    .category-label {
+      font-size: 0.72rem; color: var(--accent); letter-spacing: 3px;
+      text-transform: uppercase; margin-bottom: 32px; display: flex; align-items: center; gap: 16px;
+    }
+    .category-label::after { content: ''; flex: 1; height: 1px; background: rgba(201,169,110,0.15); }
+    .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2px; }
+    .menu-item {
+      background: var(--mid); padding: 32px 28px;
+      display: flex; justify-content: space-between; align-items: flex-start; gap: 16px;
+      transition: background 0.3s; position: relative; overflow: hidden;
+    }
+    .menu-item::before { content: ''; position: absolute; left: 0; top: 0; width: 2px; height: 0; background: var(--accent); transition: height 0.4s; }
+    .menu-item:hover::before { height: 100%; }
+    .menu-item:hover { background: #1f1f1f; }
+    .item-info h3 { font-size: 1rem; color: #fff; margin-bottom: 8px; font-weight: 600; }
+    .item-info p { color: #666; font-size: 0.83rem; line-height: 1.6; font-weight: 300; max-width: 220px; }
+    .item-tag { font-size: 0.68rem; color: var(--accent); background: rgba(201,169,110,0.1); border: 1px solid rgba(201,169,110,0.2); border-radius: 20px; padding: 3px 10px; margin-top: 10px; display: inline-block; letter-spacing: 1px; }
+    .item-price { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--accent); white-space: nowrap; flex-shrink: 0; }
+    .item-price span { font-size: 0.75rem; color: #555; font-family: 'Inter', sans-serif; display: block; text-align: right; font-weight: 300; }
+    @media (max-width: 900px) { .menu-section { padding: 60px 24px; } .menu-grid { grid-template-columns: 1fr; } }
+
+  </style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">Bloom</a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="menu.html" class="active">Menu</a>
+    <a href="gallery.html" >Gallery</a>
+    <a href="order.html" >Order</a>
+    <a href="contact.html"  class="nav-cta">Contact</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <span class="page-tag">Our Offerings</span>
+  <h1>The Menu</h1>
+  <p>Crafted with the finest ingredients. Every item is made fresh, with care.</p>
+</div>
+
+<section class="menu-section">
+  <div class="category-label">Signature Drinks</div>
+  <div class="menu-grid">
+    <div class="menu-item"><div class="item-info"><h3>Cold Brew Reserve</h3><p>Slow-steeped 18 hours, served over hand-cut ice with a hint of vanilla.</p><span class="item-tag">Best Seller</span></div><div class="item-price">₹280<span>per glass</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Saffron Latte</h3><p>Single-origin espresso with steamed milk and house-made saffron syrup.</p><span class="item-tag">Signature</span></div><div class="item-price">₹320<span>per glass</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Rose Cardamom Chai</h3><p>Traditional masala chai elevated with dried rose petals and green cardamom.</p></div><div class="item-price">₹180<span>per glass</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Matcha Horizon</h3><p>Ceremonial grade matcha, oat milk, light honey. Clean and calming.</p><span class="item-tag">New</span></div><div class="item-price">₹340<span>per glass</span></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="menu-section">
+  <div class="category-label">Small Plates</div>
+  <div class="menu-grid">
+    <div class="menu-item"><div class="item-info"><h3>Truffle Bruschetta</h3><p>Toasted sourdough, whipped ricotta, black truffle oil, micro herbs.</p><span class="item-tag">Chef's Pick</span></div><div class="item-price">₹380<span>serves 2</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Mezze Platter</h3><p>House hummus, warm pita, marinated olives, roasted peppers, feta.</p></div><div class="item-price">₹520<span>serves 2–3</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Avocado Toast</h3><p>Seeded toast, smashed avocado, cherry tomatoes, everything bagel seasoning.</p></div><div class="item-price">₹340<span>serves 1</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Burrata &amp; Beet</h3><p>Fresh burrata, roasted golden beets, aged balsamic, walnut crumble.</p><span class="item-tag">Seasonal</span></div><div class="item-price">₹480<span>serves 2</span></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="menu-section">
+  <div class="category-label">Mains</div>
+  <div class="menu-grid">
+    <div class="menu-item"><div class="item-info"><h3>Saffron Risotto</h3><p>Arborio rice, house saffron stock, parmesan crisp, herb oil drizzle.</p><span class="item-tag">Best Seller</span></div><div class="item-price">₹620<span>serves 1</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Wild Mushroom Pasta</h3><p>Handmade tagliatelle, forest mushrooms, cream, truffle, aged parmesan.</p></div><div class="item-price">₹580<span>serves 1</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Grilled Paneer Steak</h3><p>Thick-cut paneer, chimichurri, roasted seasonal vegetables, garlic bread.</p></div><div class="item-price">₹520<span>serves 1</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Mezze Grain Bowl</h3><p>Quinoa, roasted chickpeas, cucumber, tahini dressing, pomegranate.</p><span class="item-tag">Vegan</span></div><div class="item-price">₹460<span>serves 1</span></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<section class="menu-section">
+  <div class="category-label">Desserts</div>
+  <div class="menu-grid">
+    <div class="menu-item"><div class="item-info"><h3>Dark Chocolate Fondant</h3><p>Warm 72% dark chocolate lava cake, vanilla bean gelato, gold dust.</p><span class="item-tag">Signature</span></div><div class="item-price">₹380<span>serves 1</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Saffron Panna Cotta</h3><p>Silky Italian panna cotta infused with Kashmiri saffron, berry coulis.</p></div><div class="item-price">₹320<span>serves 1</span></div></div>
+    <div class="menu-item"><div class="item-info"><h3>Pistachio Baklava</h3><p>Layers of flaky phyllo, crushed pistachios, rose water honey syrup.</p></div><div class="item-price">₹280<span>serves 2</span></div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+<footer>
+  <div class="footer-logo">Bloom</div>
+  <div class="footer-text">© 2026 Bloom, Ahmedabad. Website by <a href="mailto:kotawalahatim07@gmail.com">Hatim Kotawala</a></div>
+  <div class="footer-links">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Menu</a>
+    <a href="contact.html">Contact</a>
+  </div>
+</footer>
+</body>
+</html>
